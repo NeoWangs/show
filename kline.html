@@ -1,0 +1,175 @@
+
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>kline</title>
+<script src="http://www.cssass.com/public/js/vue.js"></script>
+<script src="http://www.cssass.com/public/js/vue-jsonp.umd.js"></script>
+<script>
+(function(){
+        //jsonp的具体实现
+          var randomNum = (new Date).getTime(),
+              callName = null,
+              sendScriptRequest = function(url,id){
+                  //将请求地址以script标签形式插入到页面。（注定是GET请求）
+                var head = document.getElementsByTagName("head")[0];
+                var script = document.createElement("script");
+                script.id = id;
+                script.src = url;
+                script.charset = 'utf-8';
+                head.appendChild(script);
+            },
+            buildTempFunction = function(callback){
+                //创建一个全局方法，并将方法名当做请求地址的一个参数
+                callName = "jsonp" + randomNum++;
+                window[ callName ] = function(data){
+                    callback(data);
+                    window[ callName ] = undefined;
+                    try{ 
+                        delete window[ callName ];
+                        //var jsNode = document.getElementById(callName);
+                        //jsNode.parentElement.removeChild(jsNode);  //执行全局方法后，将script标签删除
+                    } catch(e){}
+                };
+                return callName;
+            },
+            $jsonp = function(url,params){
+                //生成GET请求地址
+                  params.callback = buildTempFunction(params.callback);
+                  url += (url.indexOf("?")>0 ) ? "" : "?" ;
+                  for(var i in params)
+                      url += "&" + i + "=" + params[i];
+                sendScriptRequest(url,callName);
+              };
+            //对外开放接口：$jsonp
+            /**
+            * @$jsonp JSONP方法
+            * @param {String} url 请求地址
+            * @param {Object} params 请求参数
+            */ 
+              if (!window.$jsonp)
+                   window.$jsonp = $jsonp;
+    })();
+  </script>
+<script src="http://www.cssass.com/public/js/echarts.common.min.js"></script>
+<style>
+html,body,#app,#showBox{height:100%;width:100%;padding:0;margin:0;}
+#controlBar{position:absolute;z-index:100;top:0;left:0;border:1px solid #ccc;background:rgba(0,0,0,0.2);border-radius: 5px;}
+#controlBar p{margin:5px;font-size:12px;}
+.inputText{width:35px;}
+</style>
+</head>
+<body>
+<div id="app">
+    <div id="controlBar">
+        
+    </div>
+  <div id="showBox" ></div>
+</div>
+</body>
+<script type="text/javascript">
+var app = new Vue({
+  el: '#app',
+  data: {
+    arr : [],
+    now : +new Date(1997, 9, 3),
+    value : Math.random() * 1000
+  },
+  methods: {
+    init:function(){
+      var that = this;
+      this.myChart = echarts.init(document.getElementById('showBox'));
+      for (var i = 0; i < 100; i++) {
+          this.arr.push(this.randomData());
+      }
+
+      window[';_jqjsp'] = function(data){
+          console.log(data);
+      }
+
+      var xhr = new XMLHttpRequest();
+          xhr.open('GET', 'https://openapi.boc.cn/erh/unlogin/kline_data_query?tradeHead=M&queryType=1&firstCoinCode=035&lastCoinCode=001&cardType=G&branchNo=00020&startTime=20190205223855&uuid=89d97a5d-76f4-136f-d07a-9270647c55cb&clientid=531&client_secret=0f8486dadab4b129fa9b9e61a3ad301824b4b8ae2e385c11d5&callback=&_1549377606025='); 
+          xhr.onload = function(e) { 
+            var data = JSON.parse(this.response);
+            
+          }
+          xhr.send();
+      
+      setInterval(function () {
+          for (var i = 0; i < 5; i++) {
+              that.arr.shift();
+              that.arr.push(that.randomData());
+          }
+          that.myChart.setOption({
+              series: [{
+                  data: that.arr
+              }]
+          });
+      }, 1000);
+    },
+    randomData:function() {
+        this.now = new Date(+this.now + 24 * 3600 * 1000);
+        return {
+            name: this.now.toString(),
+            value: [
+                [this.now.getFullYear(), this.now.getMonth() + 1, this.now.getDate()].join('/'),
+                Math.round(this.value + Math.random() * 21 - 10)
+            ]
+        }
+    },
+    print:function(){
+      var option = {
+        title: {
+            text: '动态数据 + 时间坐标轴'
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: function (params) {
+                params = params[0];
+                var date = new Date(params.name);
+                return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+            },
+            axisPointer: {
+                animation: false
+            }
+        },
+        xAxis: {
+            type: 'time',
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            }
+        },
+        series: [{
+            name: '模拟数据',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            data: this.arr
+        }]
+      }
+      this.myChart.setOption(option);
+    }
+  },
+  computed: {
+
+  },
+  watch: {
+    
+  },
+  mounted: function () {
+    this.init();
+    this.print();
+  }
+})
+</script>
+</html>
+ 
+

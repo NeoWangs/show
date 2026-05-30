@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>单身狗大冒险</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/ex-1.1.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script>
+	var _czc = _czc || [];
+	_czc.push(["_setAccount", "1256738077"]);
+
+	</script>
+</head>
+
+<body  style="margin: 0;background-color: #ffffff;overflow:hidden;">
+
+<div class="loadinglogo">
+    <img src="res/muzhi.gif" width="100%">
+</div>
+<audio style="display: none" id="audio1"  loop="loop"  autoplay="autoplay">
+    <source src="res/music.mp3" type="audio/mp3">
+</audio>
+<div class="teachDiv">
+    <img src="res/teach.gif" width="100%" >
+</div>
+
+	<div class="canvasHolder" >
+
+		<canvas id="Canvas"  style="position: absolute; overflow:hidden;width: 100%;height: 100%"></canvas>
+
+	</div>
+    <div class="main fixed">
+<div class="endMain">
+    <img src="res/endmain.png" width="100%">
+    <div class="endScore">
+        3800M
+    </div>
+    <div class="endpic1">
+        <img class="pic1img" src="res/pic11.png" width="100%">
+    </div>
+
+    <div class="endpic2">
+        <div class="endpic22">
+            <img class="picd" src="res/picd1.png">
+            <img  src="res/pic2.png" width="100%">
+        </div>
+        <img class="pic2img" src="res/pic21.png" width="100%">
+    </div>
+
+    <div class="endbottom"><img class="endbottomimg" src="res/pic4bottom.png" width="100%"></div>
+</div>
+        <div class="endpic3">
+            <img class="picd" src="res/picd1.png" >
+            <img class="pic3img" src="res/pic31.png" width="100%">
+            <img class="goods" src="res/good1.png" width="100%">
+        </div>
+<div class="sharebutton"><img class="sharebuttonimg" src="res/btn3332.png" width="100%"></div>
+        <div class="playagain"><img class="playagainimg" src="res/btn22.png" width="100%"></div>
+    <div id="rotate"><img src="res/rotate.jpg"></div>
+<div class="shareDiv">
+    <img src="res/share1.png" width="50%" style="position: absolute;top: 0;right: 0;">
+</div>
+    </div>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript">
+
+    wx.config({
+        debug: false,
+        appId: 'wx28b5eb2406488b56',
+        timestamp: '1476180840',
+        nonceStr: 's2y6gzxnkz060f6',
+        signature: '0bcd08f4ee0b3e74426da37fddcd048b559873f2',
+        jsApiList: [
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'onMenuShareQQ',
+            'onMenuShareWeibo'
+        ]
+
+    });
+    </script>
+    <script type="text/javascript" src="libs/zepto.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="libs/tweenjs-0.5.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="libs/easeljs-0.7.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="libs/preloadjs-0.4.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="libs/soundjs-0.5.2.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/tools.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/sprite.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="js/sprite1.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/state.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/main.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="js/index.js" charset="UTF-8"></script>
+
+
+    <script type="text/javascript">
+
+        wx.config({
+            debug: false,
+            appId: 'wx28b5eb2406488b56',
+            timestamp: '1476180840',
+            nonceStr: 's2y6gzxnkz060f6',
+            signature: '0bcd08f4ee0b3e74426da37fddcd048b559873f2',
+            jsApiList: [
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+                'onMenuShareQQ',
+                'onMenuShareWeibo'
+            ]
+
+        });
+
+        var titlestr = "[有人@你，单身狗~]进来签收你的礼物"
+        var iconstr ='http://'+ 'm.h5mkt.com'+'/single_dog/res/icon.jpg';
+        var linkstr = 'm.h5mkt.com'+'/single_dog/startup?cc='+getQueryString('cc');
+        var decstr = '里面有一个光棍节上街的理由'
+
+
+        $(function(){
+            wx.ready(function() {
+
+
+                var au1 = document.getElementById('audio1');
+                au1.src="res/music.mp3";
+                au1.play();
+                au1.loop = true;
+
+                //分享给朋友
+                wx.onMenuShareAppMessage({
+                    title: titlestr,
+                    desc:decstr,
+                    link: linkstr,
+                    imgUrl: iconstr,
+                    trigger: function (res) {
+                    },
+                    success: function (res) {
+
+                        _czc.push(["_trackEvent", "分享", "share", "朋友", 1]);
+                    },
+                    cancel: function (res) {
+                    },
+                    fail: function (res) {
+                    }
+                });
+                //分享到朋友圈
+                wx.onMenuShareTimeline({
+                    title:titlestr,
+                    link: linkstr,
+                    imgUrl: iconstr,
+                    trigger: function (res) {
+                    },
+                    success: function (res) {
+                        _czc.push(["_trackEvent", "分享", "share", "朋友圈", 1]);
+                    },
+                    cancel: function (res) {
+                    },
+                    fail: function (res) {
+                    }
+                });
+            })
+            wx.error(function (res) {
+                console.log(res.errMsg);
+            });
+        })
+		
+        var manifest;
+        manifest = [
+            {src:"res/car/01.png", id:"car01"},
+            {src:"res/car/02.png", id:"car02"},
+            {src:"res/car/03.png", id:"car03"},
+            {src:"res/car/04.png", id:"car04"},
+            {src:"res/car/05.png", id:"car05"},
+            {src:"res/car/06.png", id:"car06"},
+            {src:"res/endLine.png", id:"endLine"},
+            {src:"res/lan.png", id:"lan"},
+
+            {src:"res/lan1.png", id:"lan1"},
+			//{src:"res/music.mp3", id:"music"},
+            {src:"res/dirt1.png", id:"dirt1"},
+			{src:"res/dirt2.png", id:"dirt2"},
+            {src:"res/mainbg.png", id:"mainbg"},
+
+
+            {src:"res/pic32.png", id:"p1"},
+            {src:"res/pic31.png", id:"p2"},
+            {src:"res/pic33.png", id:"p3"}
+
+
+//            {src:"res/pic32.png", id:"p1"},
+//            {src:"res/pic31.png", id:"p2"},
+//            {src:"res/pic33.png", id:"p3"},
+//
+//            {src:"res/pic2.png", id:"p4"},
+//            {src:"res/pic21.png", id:"p5"},
+//            {src:"res/pic22.png", id:"p6"},
+//            {src:"res/pic23.png", id:"p7"},
+//
+//            {src:"res/pic11.png", id:"p8"},
+//            {src:"res/pic12.png", id:"p9"},
+//            {src:"res/pic13.png", id:"p10"}
+        ];
+         init(manifest);
+
+
+        $(".endpic3").on("touchend",function(){
+            location.href = 'winpage?cc='+getQueryString('cc');
+
+
+            _czc.push(["_trackEvent", "领奖", "click", "winpage", 1]);
+        });
+
+        $(".shareDiv").on("touchend",function(){
+            $(".shareDiv").hide();
+        });
+
+        $(".sharebutton").on("touchstart",function(){
+            $(".sharebuttonimg").attr("src","res/btn333.png");
+            $(".shareDiv").show();
+        });
+
+        $(".sharebutton").on("touchend",function(){
+            $(".sharebuttonimg").attr("src","res/btn3332.png");
+            $(".shareDiv").show();
+
+
+            _czc.push(["_trackEvent", "分享按钮", "click", "分享按钮", 1]);
+        });
+
+        $(".playagain").on("touchstart",function(){
+            $(".playagainimg").attr("src","res/btn2.png");
+
+        });
+
+        $(".playagain").on("touchend",function () {
+            $(".main").hide();
+            $(".playagainimg").attr("src","res/btn22.png");
+
+            _czc.push(["_trackEvent", "重新开始", "click", "playagain", 1]);
+            StateManager.g_instance.changeState(gameState);
+            var au1 = document.getElementById('audio1');
+            au1.src="res/music.mp3";
+            au1.play();
+            au1.loop = true;
+            $(".endpic1").hide();
+            $(".endpic2").hide();
+            $(".endpic3").hide();
+        });
+       
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<meta charset="UTF-8"/>
+<title>Unicode6.0字符显示</title>
+<style>
+	*{padding:0;margin:0;}
+	body{font-size:50px;padding:20px;}
+	h3{padding:20px 10px;background:#eee;}
+	p{word-wrap:break-word;border:1px solid #ccc; padding:10px;}
+</style>
+<script src="/public/js/extend.js"></script>
+<div id="showcode">
+
+</div>
+<script>
+var code = "<h3>Emoticons</h3><p>";
+for(var i = 0x1f600 ; i <= 0x1f64f; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+code += "<h3>Miscellaneous Symbols And Pictographs</h3><p>";
+for(var i = 0x1F300 ; i <= 0x1F5FF; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+code += "<h3>Playing Cards</h3><p>";
+for(var i = 0x1F0A0 ; i <= 0x1F0FF; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+code += "<h3>Transport And Map symbols</h3><p>";
+for(var i = 0x1F680 ; i <= 0x1F6FF; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+code += "<h3>Dingbats</h3><p>";
+for(var i = 0x2700 ; i <= 0x27BF; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+code += "<h3>Miscellaneous Technical</h3><p>";
+for(var i = 0x2300 ; i <= 0x23ff; i = i + 1 ){
+	code += "&#" + i + ";";
+}
+$id("showcode").insertAdjacentHTML("beforeend",code);
+</script>
+

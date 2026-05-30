@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>网易“哲学气质”答案解析</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="/public/js/react/react.development.js"></script>
+    <script src="/public/js/react/react-dom.development.js"></script>
+    <script src="/public/js/react/babel.min.js"></script>
+    <style>
+        body {
+            font-size: 15px;
+        }
+
+        .qustionBox {
+            margin-right: 160px;
+        }
+
+        .answerBox {
+            float: right;
+            width: 160px;
+            position: fixed;
+            right: 0;
+            top: 0;
+        }
+
+        h4 {
+            padding: 0;
+            margin: 0
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+            list-style: none;
+        }
+
+        .normal {
+            display: inline-block;
+            width: 160px;
+            font-size:14px;
+            padding-bottom:2px;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  class ShowBox extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        names: ["唯美主义-纯粹", "存在主义-本真", "荒诞主义-反叛", "利他主义-无私", "伊壁鸠鲁主义-享乐", "实用主义-务实", "怀疑主义-善思", "感觉主义-随性", "集体主义-克己", "平等主义-公正", "和平主义-温和", "理性主义-理性", "个人主义-个性", "斯多葛主义-沉着", "情感主义-感性", "绝对主义-坚定", "相对主义-通达", "犬儒主义-淡泊", "狂热主义-激情", "悲观主义-通透", "柏拉图主义-理想", "达尔文主义-进取", "马克思主义-思辨"],
+        questions: [[[20, 16, 15, 8, 1], [6, 12, 22, 13, 2, 23]], [[16, 12, 5, 6], [17, 7, 15, 22, 23]], [[19, 13, 1, 22], [10, 11, 5, 4], [7, 13, 5, 18], [10, 4, 21, 11, 23]], [[3, 12, 23, 7], [1, 21, 15, 2], [8, 13, 7, 16, 6, 18]], [[8, 16, 9], [6, 17, 23, 7, 10]], [[20, 12, 14, 11], [2, 17, 23, 22], [3, 1, 13, 21, 2]], [[5, 3, 18, 10, 4, 19, 11, 21], [12, 6, 14, 20, 17, 9]], [[11, 14, 8, 23, 10, 9], [2, 20, 15, 18], [19, 5, 3, 22, 1]], [[19, 21, 2, 13, 3, 18, 16], [22, 23, 10, 4, 5, 11, 18, 14], [2, 17, 12, 13, 10, 11], [21, 5, 4, 1, 11, 15]], [[20, 15, 13, 21, 19, 3], [18, 12, 6, 14, 4, 9]]],
+        subjects: [
+          {title: '1.你所经历的一切是：', answer: ["A:命中注定的", "B:由你过去的选择决定的"], },
+          {title: '2.七年前的你和现在的你是同一个人吗？', answer: ['A:是', 'B:不是'], selected: -1},
+          {title: '3.金鱼被放入搅拌机，你会？', answer: ['A:按下开关', 'B:不安并走开', 'C:围观', 'D:阻止'], selected: -1},
+          {title: '4.博物馆的纯红色画，你认为是？', answer: ['A:看不懂的艺术品', 'B:阿拉伯的红海', 'C:不是艺术品'], selected: -1},
+          {title: '5.乌鸦都是黑色的吗？', answer: ['A:是', 'B:不是'], selected: -1},
+          {title: '6.哪件物品最能代表你的人生？', answer: ['A:摇摆的钟摆', 'B:滚动的骰子', 'C:空白的纸'], selected: -1},
+          {title: '7.你宁愿做一个？', answer: ['A:快乐的狗', 'B:不快乐的人'], selected: -1},
+          {title: '8.你认为死亡是一场？', answer: ['A:昏睡', 'B:宿醉', 'C:狂欢'], selected: -1},
+          {
+            title: '9.选一句最喜欢的？',
+            answer: ['A:我是百依百顺的孩子单只顺从我自己', 'B:凡活着的就该活下去', 'C:你凝视深渊深渊必将凝视你', 'D:我们都生活在阴沟，但仍有人仰望星空'],
+            selected: -1
+          },
+          {title: '10.你会选择？', answer: ['A:得到一次人生重来的机会', 'B:继续现在的人生'], selected: -1},
+        ],
+        aList: [],
+        copyList : [],
+      };
+    }
+
+    keySort(key,desc){
+      return function(a, b) {
+        return desc ? b[key] - a[key] : a[key] - b[key];
+      }
+    }
+
+    chooseElement(target) {
+      var t = target.name, v = target.value, r = this.state.questions[t][v];
+      var oldValue = target.dataset.tempvalue, oldR = oldValue !== undefined ?  this.state.questions[t][oldValue] : [];
+      var aList = [].concat(this.state.aList);
+      aList.map((item) => {
+        item.focus = false; //取消红色聚焦
+      });
+
+      for (var i = 0; i < oldR.length; i++) {
+        aList[oldR[i] - 1].count --; //选项更换，取消加分
+      }
+
+      for (var i = 0; i < r.length; i++) {
+        aList[r[i] - 1].count ++;
+        aList[r[i] - 1].focus = true;
+      }
+
+      var subjects = [...this.state.subjects];
+      subjects[t].tempValue = v;
+
+      var copyList = [...this.state.aList];
+      copyList = copyList.sort(this.keySort("count",true));
+      this.setState({
+        aList: aList,
+        copyList:copyList,
+        subjects: subjects
+      });
+    };
+
+    chooseAnswer(target){
+      var subjects = [...this.state.subjects];
+      this.state.questions.map((list,i)=>{
+        subjects[i].tempValue = -1;
+        list.map((options,j)=>{
+          options.map((choice)=>{
+
+            if(choice -1 == target.value) {
+              subjects[i].tempValue =  j
+            }
+          })
+        })
+      });
+      this.setState({
+        subjects: subjects
+      });
+    }
+
+    componentDidMount() {
+      var list = [];
+      for (var i = 0; i < this.state.names.length; i++) {
+        list.push({
+          index: i,
+          name: this.state.names[i],
+          count: 0,
+          focus: false
+        });
+      }
+      this.setState({
+        aList: [...this.state.aList, ...list],
+        copyList: [...this.state.copyList, ...list],
+      });
+    }
+
+    render() {
+      return (
+        <div className="content">
+          <ul className="qustionBox">
+            {
+              this.state.subjects.map((item, index) => {
+                return (<li key={index}><h4>{item.title}</h4>
+                    {
+                      item['answer'].map((a, i) => {
+                        return <label key={i}><input name={index} data-tempvalue={item.tempValue} value={i} checked={item.tempValue == i} type='radio'
+                                                     onChange={(e) => this.chooseElement(e.target)}/>{a}； </label>
+                      })
+                    }
+                  </li>
+                )
+              })}
+          </ul>
+          <div className="answerBox">
+            {
+              this.state.copyList.map((item) => {
+                return <label className={item.focus ? 'normal red' : 'normal'}
+                             key={item.index}><input name="answer" value={item.index} onChange={(e) => this.chooseAnswer(e.target)} type="radio" />{item.name}({item.count})</label>
+              })}
+              <button onClick={()=>location.reload()}>刷新</button>
+          </div>
+        </div>
+      );
+    }
+  }
+  ReactDOM.render(<ShowBox/>, document.getElementById('root'));
+</script>
+</body>
+</html>

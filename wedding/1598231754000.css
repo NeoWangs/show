@@ -1,0 +1,27 @@
+@font-face {
+	font-family: HYRunYuan-55J; 
+	src: local('HYRunYuan-55J'),
+		url('font/HYRunYuan-55J.woff2') format('woff2'),
+		url('font/HYRunYuan-55J.ttf') format('truetype')
+}
+@font-face {
+	font-family: TTXianHeiJ; 
+	src: local('TTXianHeiJ'),
+		url('font/TTXianHeiJ.woff2') format('woff2'),
+		url('font/TTXianHeiJ.woff') format('woff'),
+		url('font/TTXianHeiJ.ttf') format('truetype')
+}
+@font-face {
+	font-family: fangzheng_xbsjt; 
+	src: local('fangzheng_xbsjt'),
+		url('font/fangzheng_xbsjt.woff2') format('woff2'),
+		url('font/fangzheng_xbsjt.woff') format('woff'),
+		url('font/fangzheng_xbsjt.ttf') format('truetype')
+}
+@font-face {
+	font-family: fangzheng_s3jt; 
+	src: local('fangzheng_s3jt'),
+		url('font/fangzheng_s3jt.woff2') format('woff2'),
+		url('font/fangzheng_s3jt.woff') format('woff'),
+		url('font/fangzheng_s3jt.ttf') format('truetype')
+}

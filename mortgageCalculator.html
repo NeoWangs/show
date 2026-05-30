@@ -1,0 +1,294 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>房贷计算</title>
+<script src="../public/js/vue.js"></script>
+<script src="../public/js/echarts.common.min.js"></script>
+<style>
+html,body,#app,#showBox{height:100%;width:100%;padding:0;margin:0;}
+#controlBar{position:absolute;z-index:100;top:0;left:0;border:1px solid #ccc;background:rgba(0,0,0,0.2);border-radius: 5px;}
+#controlBar p{margin:5px;font-size:12px;}
+.inputText{width:35px;}
+</style>
+</head>
+<body>
+
+<div id="app">
+    <div id="controlBar">
+        <p>贷款总额:<input class="inputText" v-bind:value="credit/10000" v-on:input="credit = $event.target.value*10000" type="number"/>万</p>
+        <p>利息:<input class="inputText" v-bind:value="rate*100" v-on:input="rate = $event.target.value/100" type="number" />%</p>
+        <p>期数:<select v-model="period" >
+            <option value="360">30年</option>
+            <option value="300">25年</option>
+            <option value="240">20年</option>
+            <option value="180">15年</option>
+            <option value="120">10年</option>
+            <option value="60">5年</option>
+            <option value="6">半年</option>
+          </select>
+          </p>
+    </div>
+  <div id="showBox" ></div>
+</div>
+</body>
+<script type="text/javascript">
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    credit: 1200000,
+    rate: 0.045,
+    period: 300,
+    log_A: [],
+    log_B: [],
+    total_A: 0,
+    total_B: 0,
+  },
+  methods: {
+    init:function(){
+      this.myChart = echarts.init(document.getElementById('showBox'));
+    },
+    print:function(){
+
+      this.log_A = [];
+    this.log_B = [];
+    this.total_A = 0;
+    this.total_B = 0;
+
+       //等额本金计算过程
+    for (var i = 0, interest = 0, capital = 0, repayment = 0; i < this.period; i++) {
+      capital = this.credit / this.period;  //每月应还本金(等额)
+      interest = (this.credit - capital * i) * (this.rate / 12); //每月应还利息
+      repayment = interest + capital //每月还款本金+利息
+      this.log_A.push({ period: (i + 1) + '月', interest: interest.toFixed(2), capital: capital.toFixed(2), repayment: repayment });
+      this.total_A += repayment;
+    }
+
+    //等额本息计算过程 （对银行来说就是一笔年金）
+    for (var i = 0, discount_factor = 0, discount_factor_sum = 0; i < this.period; i++) {
+      //贴现系数d1，d1=Fv1(当月应还本息)/Pv1(本笔金额现值)，Fv1*d1 + Fv2*d2 + ... + Fvn*dn = (Pv1+Pv2+...Pvn) 。由于：现值之和(Pv1+Pv2+...Pvn)就是贷款总额credit；并且每个月还款金额相同(等额本息)，所以Fv = Pv/(d1+...dn) 每个月还款金额=贷款总额/贴现系数之和.  （此次没有直接用年金公式，其实年金公式就是通过折现因子求和推导出来的）
+      discount_factor = 1 / (Math.pow((1 + this.rate / 12), this.period - i));
+      discount_factor_sum += discount_factor;
+      this.log_B.push({ 'period': (i + 1) + '月', 'discount_factor': discount_factor })
+    }
+    var repayment = this.credit / discount_factor_sum; //每月应还本息(等额)
+    for (var i in this.log_B) {
+      this.log_B[i].capital = (repayment * this.log_B[i].discount_factor).toFixed(2); //每月本金
+      this.log_B[i].interest = (repayment * (1 - this.log_B[i].discount_factor)).toFixed(2)//每月利息
+      this.log_B[i].repayment = repayment;
+    }
+    this.total_B = repayment * this.period;
+    //计算结束
+
+    // console.log(this.log_A, this.total_A);
+    // console.log(this.log_B, this.total_B);
+
+    var maxRepay = Math.ceil(this.log_A[0].repayment); 
+    
+    var option = {
+      title: [{
+        top: '5%',
+        left: '25%',
+        text: '等额本金',
+        subtext: this.period/12+"年应还"+this.total_A.toFixed(2)+"元"
+      }, {
+        top: '5%',
+        right: '25%',
+        text: '等额本息',
+        subtext: this.period/12+"年应还"+this.total_B.toFixed(2)+"元"
+      }, {
+        top: '51%',
+        left: '25%',
+        text: '本金对比',
+        subtext: "贷款总额"+this.credit
+      }, {
+        top: '51%',
+        right: '25%',
+        text: '利息对比',
+        subtext: "等额本金利息:"+ (this.total_A - this.credit) +  "\n等额本息利息:"+ (this.total_B - this.credit).toFixed(0)
+      }],
+
+
+      legend: {},
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+        }
+      },
+      axisPointer: {
+        link: { xAxisIndex: [1, 0] },  //0,1区块tooltip联动
+      },
+
+
+      dataset: [{
+        dimensions: ['period', 'capital', 'interest'],
+        source: this.log_A
+      }, {
+        dimensions: ['period', 'capital', 'interest'],
+        source: this.log_B
+      }],
+      color: ['rgba(76,171,206,0.6)', 'rgba(0,51,102,0.6)', 'rgba(255,204,204,0.6)', 'rgba(229,50,62,0.6)'],
+      
+      xAxis: [
+        {
+          type: 'category', axisPointer: {
+            type: 'shadow'
+          }, gridIndex: 0
+        },
+        {
+          type: 'category', axisPointer: {
+            type: 'shadow'
+          }, gridIndex: 1
+        },
+        {
+          type: 'category', axisPointer: {
+            type: 'shadow'
+          }, gridIndex: 2
+        },
+        {
+          type: 'category', axisPointer: {
+            type: 'shadow'
+          }, gridIndex: 3
+        },
+      ],
+
+      yAxis: [
+        { gridIndex: 0, max: maxRepay },
+        { gridIndex: 1, max: maxRepay },
+        { gridIndex: 2, max: maxRepay },
+        { gridIndex: 3, max: maxRepay }
+      ],
+
+      grid: [
+        { right: '55%', bottom: '55%' },
+        { left: '55%', bottom: '55%' },
+        { right: '55%', top: '55%' },
+        { left: '55%', top: '55%' },
+      ],
+      dataZoom: [{
+        xAxisIndex: [1, 2, 3, 0],
+        type: 'slider',
+        bottom: '0%',
+        start: 0,
+        end: 100
+      }, {
+        yAxisIndex: [3],
+        type: 'slider',
+        bottom: '10%',
+        start: 0,
+        end: 100
+      }],
+      barGap: 0,
+
+      
+      series: [{
+        name: '等额本金-月还本金',
+        type: 'bar',
+         // label: {
+         //        normal: {
+         //            show: true,
+         //        }
+         //    },
+        stack: 'A'  //同组叠加
+      }, {
+        name: '等额本金-月还利息',
+        type: 'bar',
+        // label: {
+        //         normal: {
+        //             show: true,
+        //             position:'bottom'
+        //         }
+        //     },
+        stack: 'A'
+      }, {
+        name: '等额本息-月还本金',
+        type: 'bar',
+        xAxisIndex: 1, //x轴区块
+        yAxisIndex: 1, //y轴区块
+        datasetIndex: 1, //数据源
+        stack: 'B'
+      }, {
+        name: '等额本息-月还利息',
+        type: 'bar',
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        datasetIndex: 1,
+        stack: 'B',
+      }, {
+        name: '等额本金-月还本金',
+        type: 'bar',
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+        datasetIndex: 0,
+        stack: 'C1',
+      }, {
+        name: '等额本息-月还本金',
+        type: 'bar',
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+        datasetIndex: 1,
+        stack: 'C2',
+        markLine: {
+          symbol: 'none',
+          type: 'dotted',
+          data: [{
+            name: '平均线',
+            type: 'average'
+          }]
+        }
+      }, {
+        name: '等额本金-月还利息',
+        type: 'bar',
+        encode: { x: 0, y: 'interest' },  //数据dimensions，使用序号或别名
+        xAxisIndex: 3,
+        yAxisIndex: 3,
+        datasetIndex: 0,
+        stack: 'D1',
+        markLine: {
+          symbol: 'none',
+          data: [[
+            {
+              coord: [0, 0]
+            },
+            {
+              name: this.log_B[this.log_B.length - 1].interest,
+              coord: [this.log_B.length - 1, this.log_B[this.log_B.length - 1].interest]
+            }
+          ]]
+        }
+      }, {
+        name: '等额本息-月还利息',
+        type: 'bar',
+        encode: { x: 0, y: 'interest' },
+        xAxisIndex: 3,
+        yAxisIndex: 3,
+        datasetIndex: 1,
+        stack: 'D2',
+      }]
+    }
+    this.myChart.setOption(option);
+    }
+  },
+  computed: {
+
+  },
+  watch: {
+    credit : function(){
+      this.print();
+    },
+    rate : function(){
+      this.print();
+    },
+    period : function(){
+      this.print();
+    }
+  },
+  mounted: function () {
+    this.init();
+    this.print();
+  }
+})
+</script>
+</html>

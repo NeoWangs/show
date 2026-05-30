@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>阳光海滩</title>
+	 <meta name="viewport" content="width=device-width, initial-scale=0.85" />
+    <style>
+        :root{
+            --sun:#ffd278;
+            --peach:#ff9c87;
+            --rose:#f7b2c4;
+            --sky:#9bd9e8;
+            --sea:#2f9eaa;
+            --foam:rgba(255,255,255,0.72);
+            --ink:#5a3f44;
+        }
+        *{box-sizing:border-box;}
+        html,body{padding:0;margin:0;height:100%;overflow:hidden;}
+        body{
+            min-height:100%;
+            font-family:"Palatino Linotype","Book Antiqua",Georgia,"Microsoft YaHei",serif;
+            color:var(--ink);
+            background:
+                radial-gradient(circle at 22% 18%, rgba(255,255,255,0.9) 0 2px, transparent 3px 100%),
+                radial-gradient(circle at 72% 22%, rgba(255,255,255,0.75) 0 1px, transparent 2px 100%),
+                linear-gradient(165deg,#ffe7b7 0%,var(--peach) 34%,var(--sky) 67%,var(--sea) 100%);
+        }
+        body:before{
+            content:"";
+            position:fixed;
+            inset:-10%;
+            pointer-events:none;
+            background:
+                radial-gradient(circle at 50% 38%, rgba(255,255,255,0.62), transparent 0.4%),
+                radial-gradient(circle at 34% 54%, rgba(255,255,255,0.42), transparent 0.35%),
+                radial-gradient(circle at 78% 48%, rgba(255,255,255,0.45), transparent 0.3%);
+            background-size:170px 170px,220px 220px,190px 190px;
+            animation:sparkle 16s linear infinite;
+            opacity:.48;
+        }
+        body:after{
+            content:"";
+            position:fixed;
+            left:-8%;
+            right:-8%;
+            bottom:-13%;
+            height:42%;
+            pointer-events:none;
+            background:
+                radial-gradient(90px 30px at 12% 8%, var(--foam) 0 36%, transparent 38%),
+                radial-gradient(120px 34px at 38% 18%, rgba(255,255,255,0.58) 0 38%, transparent 40%),
+                radial-gradient(100px 28px at 66% 10%, rgba(255,255,255,0.62) 0 36%, transparent 38%),
+                radial-gradient(140px 36px at 92% 20%, rgba(255,255,255,0.5) 0 37%, transparent 39%),
+                linear-gradient(180deg,rgba(255,255,255,0.08),rgba(36,108,123,0.38));
+            border-radius:50% 50% 0 0 / 22% 22% 0 0;
+            filter:blur(.2px);
+            animation:tide 8s ease-in-out infinite;
+        }
+        .scene{
+            position:relative;
+            z-index:1;
+            width:100%;
+            height:100%;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:20px;
+            padding:34px 22px 52px;
+        }
+        .scene:before{
+            content:"";
+            position:absolute;
+            width:180px;
+            height:180px;
+            left:13%;
+            top:11%;
+            border-radius:50%;
+            background:radial-gradient(circle,var(--sun) 0 32%,rgba(255,210,120,0.34) 33% 58%,transparent 60%);
+            box-shadow:0 0 55px rgba(255,177,108,0.58);
+            animation:sunbreath 7s ease-in-out infinite;
+        }
+        .scene:after{
+            content:"";
+            position:absolute;
+            right:8%;
+            top:15%;
+            width:210px;
+            height:70px;
+            border-radius:999px;
+            background:
+                radial-gradient(circle at 18% 54%, rgba(255,255,255,0.88) 0 34%, transparent 36%),
+                radial-gradient(circle at 42% 36%, rgba(255,255,255,0.78) 0 38%, transparent 40%),
+                radial-gradient(circle at 69% 58%, rgba(255,255,255,0.74) 0 32%, transparent 34%);
+            filter:blur(.2px);
+            animation:cloud 18s ease-in-out infinite;
+        }
+        .postcard{
+            position:relative;
+            width:min(448px,78vw);
+            aspect-ratio:448/600;
+            border:12px solid rgba(255,255,255,0.84);
+            border-bottom-width:46px;
+            border-radius:18px;
+            background:url(front.gif) 50% 50%/cover no-repeat;
+            box-shadow:
+                0 28px 70px rgba(63,60,78,0.34),
+                0 6px 18px rgba(255,255,255,0.32) inset;
+            transform:rotate(-1.5deg);
+            animation:floatcard 7s ease-in-out infinite;
+        }
+        .postcard:before{
+            content:"";
+            position:absolute;
+            inset:-12px;
+            border-radius:18px;
+            background:linear-gradient(140deg,rgba(255,255,255,0.7),transparent 34%,rgba(255,156,135,0.22) 66%,rgba(47,158,170,0.24));
+            mix-blend-mode:screen;
+            pointer-events:none;
+        }
+        .postcard:after{
+            content:"阳光海滩";
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:-38px;
+            text-align:center;
+            font-size:22px;
+            letter-spacing:0;
+            color:#7b4a52;
+            text-shadow:0 1px 0 rgba(255,255,255,0.82);
+        }
+        .caption{
+            position:relative;
+            width:min(520px,78vw);
+            text-align:center;
+            font-size:18px;
+            line-height:1.8;
+            color:rgba(86,59,66,0.88);
+            text-shadow:0 1px 12px rgba(255,255,255,0.7);
+        }
+        .petal{
+            position:absolute;
+            width:18px;
+            height:12px;
+            border-radius:70% 30% 70% 30%;
+            background:linear-gradient(135deg,rgba(255,255,255,0.88),var(--rose));
+            box-shadow:0 6px 18px rgba(181,92,112,0.22);
+            opacity:.82;
+            animation:drift 12s ease-in-out infinite;
+        }
+        .petal.one{left:18%;top:70%;animation-delay:-2s;}
+        .petal.two{right:18%;top:38%;animation-delay:-7s;transform:scale(.8) rotate(28deg);}
+        .petal.three{left:72%;top:73%;animation-delay:-4s;transform:scale(.7) rotate(-16deg);}
+        @keyframes floatcard{
+            0%,100%{transform:translateY(0) rotate(-1.5deg);}
+            50%{transform:translateY(-10px) rotate(.6deg);}
+        }
+        @keyframes sunbreath{
+            0%,100%{transform:scale(1);opacity:.9;}
+            50%{transform:scale(1.06);opacity:.72;}
+        }
+        @keyframes cloud{
+            0%,100%{transform:translateX(0);}
+            50%{transform:translateX(-28px);}
+        }
+        @keyframes tide{
+            0%,100%{transform:translateY(0);}
+            50%{transform:translateY(13px);}
+        }
+        @keyframes sparkle{
+            from{transform:translate3d(0,0,0);}
+            to{transform:translate3d(-170px,170px,0);}
+        }
+        @keyframes drift{
+            0%,100%{transform:translate3d(0,0,0) rotate(0deg);}
+            45%{transform:translate3d(22px,-36px,0) rotate(24deg);}
+            75%{transform:translate3d(-18px,-18px,0) rotate(-18deg);}
+        }
+        @media (max-width:640px){
+            .scene{gap:16px;padding:22px 14px 44px;}
+            .scene:before{width:126px;height:126px;left:6%;top:9%;}
+            .scene:after{right:-14%;top:12%;transform:scale(.78);}
+            .postcard{width:min(420px,86vw);border-width:9px;border-bottom-width:40px;border-radius:15px;}
+            .postcard:after{bottom:-34px;font-size:19px;}
+            .caption{font-size:15px;width:88vw;}
+        }
+    </style>
+</head>
+<body>
+     <main class="scene">
+        <div class="postcard"></div>
+        <p class="caption">海风慢一点，阳光软一点，把这一刻留给喜欢的人。</p>
+        <i class="petal one"></i>
+        <i class="petal two"></i>
+        <i class="petal three"></i>
+     </main>
+	 <audio src="bgm.mp3" autoplay loop  >  </audio> 
+</body>
+</html>

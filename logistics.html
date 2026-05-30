@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  canvas {
+    border: 1px solid black;
+  }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="400"></canvas>
+<script>
+  const canvas = document.getElementById("gameCanvas");
+  const ctx = canvas.getContext("2d");
+
+  const blockSize = 50;
+  let playerX = 0;
+  let playerY = canvas.height / 2 - blockSize / 2;
+
+  let movingRight = true;
+  let atCrossroad = false;
+  let crossroadDirection = "Right";
+
+  function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw player
+    ctx.fillStyle = "blue";
+    ctx.fillRect(playerX, playerY, blockSize, blockSize);
+
+    // Draw crossroad
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 5;
+
+    // Vertical line
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2, 0);
+    ctx.lineTo(canvas.width / 2, canvas.height);
+    ctx.stroke();
+
+    // Horizontal line
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height / 2);
+    ctx.lineTo(canvas.width, canvas.height / 2);
+    ctx.stroke();
+
+    // Draw direction arrow
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    if (crossroadDirection === "Right") {
+      ctx.moveTo(canvas.width / 2 + 10, canvas.height / 2);
+      ctx.lineTo(canvas.width / 2, canvas.height / 2 - 10);
+      ctx.lineTo(canvas.width / 2, canvas.height / 2 + 10);
+    } else if (crossroadDirection === "Up") {
+      ctx.moveTo(canvas.width / 2, canvas.height / 2 - 10);
+      ctx.lineTo(canvas.width / 2 - 10, canvas.height / 2);
+      ctx.lineTo(canvas.width / 2 + 10, canvas.height / 2);
+    } else if (crossroadDirection === "Down") {
+      ctx.moveTo(canvas.width / 2, canvas.height / 2 + 10);
+      ctx.lineTo(canvas.width / 2 - 10, canvas.height / 2);
+      ctx.lineTo(canvas.width / 2 + 10, canvas.height / 2);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function movePlayer() {
+    if (atCrossroad) {
+      return;
+    }
+
+    if (movingRight) {
+      playerX += 1;
+      if (playerX + blockSize > canvas.width / 2) {
+        atCrossroad = true;
+      }
+    }
+
+    drawGame();
+    requestAnimationFrame(movePlayer);
+  }
+
+  function resetPlayer() {
+    playerX = 0;
+    atCrossroad = false;
+    movingRight = true;
+    drawGame();
+    movePlayer();
+  }
+
+  document.addEventListener("keydown", function(event) {
+    if (atCrossroad) {
+      switch (event.key) {
+        case "ArrowDown":
+          crossroadDirection = "Down";
+          movingRight = false;
+          playerY += blockSize;
+          resetPlayer();
+          break;
+        case "ArrowUp":
+          crossroadDirection = "Up";
+          movingRight = false;
+          playerY -= blockSize;
+          resetPlayer();
+          break;
+      }
+    }
+  });
+
+  resetPlayer();
+</script>
+</body>
+</html>

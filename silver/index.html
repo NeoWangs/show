@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!-- saved from url=(0148)https://ebsnew.boc.cn/boc15/kline/index.html?cc1=068&cc2=001&c1=%u4EBA%u6C11%u5E01%u94F6&c2=%u4EBA%u6C11%u5E01%u5143&th=M&cn=%u8D35%u91D1%u5C5E&ct=G -->
+<html lang="zh" slick-uniqueid="3">
+ <head>
+  <meta charset="UTF-8" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+  <style>
+	.selected{color:#00f}
+	.index_container{font-size:12px;z-index:0;display:none}#d,#dea,#dif,#j,#k,#macd{margin-left:10px}#refresh{color:red}body,html{background-color:#fff;height:100%}#menu{padding-bottom:8px;margin:auto;text-align:center}#mainContainer{position:relative;height:95%;min-height:600px}#main{width:100%;min-width:600px;height:100%;z-index:1}#kdj_container{position:absolute;top:52%;left:80px}#macd_container{position:absolute;top:67%;left:80px}#overlay{left:0;top:0;position:absolute;background-color:#fff;opacity:.8;z-index:-999;overflow:auto;width:100%;height:100%}#overlay #error{left:50%;top:50%;position:absolute;opacity:1;overflow:auto;text-align:center;width:600px;height:100px;margin-left:-300px;margin-top:-50px}#overlay.show{z-index:999}#tips{color:red;margin:auto;margin-top:-30px;text-align:center;font-weight:700}
+	</style> 
+  <title>行情走势参考图</title> 
+  <script src="/public/js/echarts.min.js"></script> 
+  <script src="/public/js/jquery.js"></script> 
+  <script src="/public/js/jquery.jsonp.js">
+	</script> 
+ </head> 
+ <body>
+  <div id="menu">
+   <button id="minuteBtn" value="1">分时</button> 
+   <button id="hourBtn" value="2">1小时</button> 
+   <button id="fourHoursBtn" value="3">4小时</button> 
+   <button id="dayBtn" class="selected" value="4">日图</button> 
+   <button id="weekBtn" value="5">周图</button> 
+   <button id="monthBtn" value="6">月图</button> 
+   <span><button id="refresh">刷新</button> <span id="stateText"></span></span>
+  </div>
+  <div id="mainContainer"> 
+   <div id="main"> 
+    
+   </div> 
+   <div id="kdj_container" class="index_container">
+    
+   </div> 
+   <div id="macd_container" class="index_container">
+    
+   </div> 
+   <div id="overlay">
+    <h3 id="error"></h3>
+   </div>
+  </div> 
+  <script type="text/javascript" src="util.js"></script> 
+  <script type="text/javascript" src="echartsWrapper.js"></script> 
+  <script type="text/javascript" src="main.js"></script> 
+  <p id="tips"></p>  
+ </body>
+</html>

@@ -1,0 +1,288 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>2019年终奖扣税计算(新旧版)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@4.9.0/dist/echarts.common.min.js"></script>
+<style>
+html,body,#app,#showBox{height:100%;width:100%;padding:0;margin:0;}
+#controlBar{position:absolute;z-index:100;top:25px;left:20%;border:1px solid #ccc;background:rgba(0,0,0,0.2);border-radius: 5px;}
+#controlBar p{margin:5px;font-size:12px;}
+.inputText{width:100;}
+.inputArea{width:40;}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="controlBar">
+        <p>税前年终奖金:<input class="inputText" v-bind:value="myBonus" v-on:input="myBonus = $event.target.value" type="number"/></p>
+        <p>2019版到手:{{afterTax2019}}(税:{{tax2019}})</p>
+        <p>2011版到手:{{afterTax2011}}(税:{{tax2011}})</p>
+        <p>显示范围:<input class="inputArea" v-bind:value="base_bonus/10000" v-on:input="base_bonus = $event.target.value*10000" type="number"/>万-<input class="inputArea" v-bind:value="top_bonus/10000" v-on:input="top_bonus = $event.target.value*10000" type="number"/>万</p>
+    </div>
+	<div id="showBox" ></div>
+</div>
+<script type="text/javascript">
+var app = new Vue({
+  el: '#app',
+  data: {
+    myBonus:500000,
+    base_bonus: 10000,
+    top_bonus:1000000,
+    rate: [0.03,0.1,0.2,0.25,0.3,0.35,0.45],
+    step: 1000,
+    bonusArr:[],
+    level:{
+      '2019':[3000,12000,25000,35000,55000,80000],
+      '2011':[1500,4500,9000,35000,55000,80000],
+      '2019Dedt':[3000*(0.1-0.03), //210
+            3000*(0.2-0.03)+(12000-3000)*(0.2-0.1), //1410
+            3000*(0.25-0.03)+(12000-3000)*(0.25-0.1) + (25000-12000)*(0.25-0.2), //2660
+            3000*(0.3-0.03)+(12000-3000)*(0.3-0.1) + (25000-12000)*(0.3-0.2) + (35000-25000)*(0.3-0.25), //4410
+            3000*(0.35-0.03)+(12000-3000)*(0.35-0.1) + (25000-12000)*(0.35-0.2) + (35000-25000)*(0.35-0.25) + (55000-35000)*(0.35-0.3), //7160
+            3000*(0.45-0.03)+(12000-3000)*(0.45-0.1) + (25000-12000)*(0.45-0.2) + (35000-25000)*(0.45-0.25) + (55000-35000)*(0.45-0.3) + (80000-55000)*(0.45-0.35) //15160
+            ],
+      '2011Dedt':[1500*(0.1-0.03), //105
+          1500*(0.2-0.03)+(4500-1500)*(0.2-0.1), //555
+          1500*(0.25-0.03)+(4500-1500)*(0.25-0.1) + (9000-4500)*(0.25-0.2), //1005
+          1500*(0.3-0.03)+(4500-1500)*(0.3-0.1) + (9000-4500)*(0.3-0.2) + (35000-9000)*(0.3-0.25), //2755
+          1500*(0.35-0.03)+(4500-1500)*(0.35-0.1) + (9000-4500)*(0.35-0.2) + (35000-9000)*(0.35-0.25) + (55000-35000)*(0.35-0.3), //5505
+          1500*(0.45-0.03)+(4500-1500)*(0.45-0.1) + (9000-4500)*(0.45-0.2) + (35000-9000)*(0.45-0.25) + (55000-35000)*(0.45-0.3) + (80000-55000)*(0.45-0.35) //13505
+            ]
+    },
+    tax:{
+      '2019':[],
+      '2011':[]
+    },
+    afterTax:{
+      '2019':[],
+      '2011':[]
+    }
+  },
+  methods: {
+      init:function(){
+        this.myChart = echarts.init(document.getElementById('showBox'));
+      },
+      run:function(){
+        this.bonusArr = [];
+        this.tax['2019']=[];
+        this.tax['2011']=[];
+        this.afterTax['2019']=[];
+        this.afterTax['2011']=[];
+        for(var i=0; i<=(this.top_bonus - this.base_bonus)/this.step; i++){
+          this.bonusArr[i] = this.base_bonus + i * this.step;
+            var calcTax = this.calc(this.bonusArr[i]);
+            this.tax['2019'][i] = calcTax['2019'];
+            this.tax['2011'][i] = calcTax['2011'];
+            this.afterTax['2019'][i] = this.bonusArr[i] - calcTax['2019'];
+            this.afterTax['2011'][i] = this.bonusArr[i] - calcTax['2011'];
+        }
+        this.print();
+      },
+      calc:function(bonus){
+        console.log(bonus);
+        var calcTax = {
+          '2019':0,
+          '2011':0
+        };
+        switch(true){
+            case bonus > this.level['2019'][5] * 12: //大于 80000 * 12 = 96万
+              calcTax['2019'] = bonus * this.rate[6] - this.level['2019Dedt'][5];
+              break;
+            case bonus > this.level['2019'][4] * 12: //大于 55000 * 12 = 66万
+              calcTax['2019'] = bonus * this.rate[5] - this.level['2019Dedt'][4];
+              break;
+            case bonus > this.level['2019'][3] * 12: //大于 35000 * 12 = 42万
+              calcTax['2019'] = bonus * this.rate[4] - this.level['2019Dedt'][3];
+              break;
+            case bonus > this.level['2019'][2] * 12: //大于 25000 * 12 = 30万
+              calcTax['2019'] = bonus * this.rate[3] - this.level['2019Dedt'][2];
+              break;
+            case bonus > this.level['2019'][1] * 12: //大于 12000 * 12 = 14万4
+              calcTax['2019'] = bonus * this.rate[2] - this.level['2019Dedt'][1];
+              break;
+            case bonus > this.level['2019'][0] * 12: //大于 3000 * 12 = 3万6
+              calcTax['2019'] = bonus * this.rate[1] - this.level['2019Dedt'][0];
+              break;
+            case bonus <= this.level['2019'][0] * 12: //小于 3000 * 12 = 3万6
+              calcTax['2019'] = bonus * this.rate[0];
+              break;
+          };
+          switch(true){
+            case bonus > this.level['2011'][5] * 12: //大于 80000 * 12 = 96万
+              calcTax['2011'] = bonus * this.rate[6] - this.level['2011Dedt'][5];
+              break;
+            case bonus > this.level['2011'][4] * 12: //大于 55000 * 12 = 66万
+              calcTax['2011'] = bonus * this.rate[5] - this.level['2011Dedt'][4];
+              break;
+            case bonus > this.level['2011'][3] * 12: //大于 35000 * 12 = 42万
+              calcTax['2011'] = bonus * this.rate[4] - this.level['2011Dedt'][3];
+              break;
+            case bonus > this.level['2011'][2] * 12: //大于 25000 * 12 = 30万
+              calcTax['2011'] = bonus * this.rate[3] - this.level['2011Dedt'][2];
+              break;
+            case bonus > this.level['2011'][1] * 12: //大于 9000 * 12 = 10万8
+              calcTax['2011'] = bonus * this.rate[2] - this.level['2011Dedt'][1];
+              break;
+            case bonus > this.level['2011'][0] * 12: //大于 4500 * 12 = 5万4
+              calcTax['2011'] = bonus * this.rate[1] - this.level['2011Dedt'][0];
+              break;
+            case bonus <= this.level['2011'][0] * 12: //小于 1500 * 12 = 1万8
+              calcTax['2011'] = bonus * this.rate[0];
+              break;
+          }
+          return calcTax;
+      },
+      print:function(){
+      var option = {
+        title: {
+          //text: '新旧版(2019)年终奖金计算'
+        },
+        tooltip : {
+          trigger: 'axis',
+        },
+      legend: {
+          data:['2019税后','2019税','2011税后','2011税'],
+          selected:{'2019税后':true,'2019税':true,'2011税后':false,'2011税':false},
+      },
+      grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '10%',
+          containLabel: true
+      },
+      dataZoom: [{
+        type: 'inside'
+      }, {
+          type: 'slider'
+      }],
+      xAxis : [
+          {
+            type : 'category',
+            axisPointer: {
+                value: this.myBonus/1000,
+                lineStyle: {
+                    color: '#004E52',
+                    opacity: 1,
+                    width: 2
+                },
+                handle: {
+                    show: true
+                }
+            },
+            data : this.bonusArr
+          }
+      ],
+      yAxis : [
+          {
+              type : 'value'
+          }
+      ],
+      series : [{
+              name:'2019税后',
+              type:'line',
+              stack: '2019',
+              areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#d68262'
+                    }, {
+                        offset: 1,
+                        color: '#ffe'
+                    }])
+                }
+            },
+              data:this.afterTax['2019']
+          },
+          {
+              name:'2019税',
+              type:'line',
+              stack: '2019',
+              areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#d68262'
+                    }, {
+                        offset: 1,
+                        color: '#ffe'
+                    }])
+                },
+              },
+              data:this.tax['2019']
+          },
+          {
+              name:'2011税后',
+              type:'line',
+              stack: '2011',
+              areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#8ec6ad'
+                    }, {
+                        offset: 1,
+                        color: '#ffe'
+                    }])
+                }
+              },
+              data:this.afterTax['2011']
+          },
+          {
+              name:'2011税',
+              type:'line',
+              stack: '2011',
+              areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#8ec6ad'
+                    }, {
+                        offset: 1,
+                        color: '#ffe'
+                    }])
+                }
+              },
+              data:this.tax['2011']
+          }
+      ]
+    }
+    this.myChart.setOption(option);
+    }
+  },
+  computed: {
+    tax2019: function () {
+      return this.calc(this.myBonus)['2019']
+    },
+    afterTax2019: function () {
+      return this.myBonus - this.tax2019
+    },
+    tax2011: function () {
+      return this.calc(this.myBonus)['2011']
+    },
+    afterTax2011: function () {
+      return this.myBonus - this.tax2011
+    },
+  },
+  watch: {
+    myBonus : function(){
+      this.print();
+    },
+    base_bonus:function(){
+      this.run();
+    },
+    top_bonus:function(){
+      this.run();
+    },
+  },
+  mounted: function () {
+    this.init();
+    this.run();
+    
+  }
+})
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>To my lady</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="Handh eldFriendly" content="true" />
+	<link rel="apple-touch-icon" sizes="256x256" href="mylady/myladyicon.png" />
+	<style type="text/css">
+		:root{
+			--rose:#8b2736;
+			--wine:#551a24;
+			--ink:#2d1715;
+			--gold:#c8a45b;
+			--paper:rgba(234,211,162,.78);
+			--paper-deep:rgba(202,160,106,.66);
+		}
+		*{padding:0;margin:0;box-sizing:border-box;}
+		html,body{height:100%;overflow:hidden;}
+		a{color:var(--wine);}
+		body{
+			position:relative;
+			display:flex;
+			align-items:center;
+			justify-content:center;
+			font-family:Georgia,'Times New Roman','Songti SC','SimSun',serif;
+			font-size:20px;
+			color:var(--ink);
+			background:
+				linear-gradient(140deg,rgba(40,7,13,.56),rgba(117,36,47,.16) 46%,rgba(255,236,204,.28)),
+				url(mylady/myladybg.jpg) center/cover no-repeat;
+		}
+		body:before{
+			content:"";
+			position:absolute;
+			inset:0;
+			background:
+				linear-gradient(90deg,rgba(42,13,16,.44),transparent 26%,transparent 74%,rgba(42,13,16,.38)),
+				linear-gradient(180deg,rgba(255,231,190,.2),transparent 38%,rgba(74,18,24,.28)),
+				repeating-linear-gradient(115deg,rgba(255,235,198,.06) 0,rgba(255,235,198,.06) 1px,transparent 1px,transparent 18px);
+			pointer-events:none;
+		}
+		body:after{
+			content:"";
+			position:absolute;
+			inset:14px;
+			border:1px solid rgba(255,230,177,.44);
+			box-shadow:inset 0 0 0 1px rgba(86,31,34,.22);
+			pointer-events:none;
+		}
+		.box{
+			position:relative;
+			width:min(64vw,520px);
+			min-height:min(78vh,760px);
+			word-wrap:break-word;
+			margin:0 auto;
+			padding:64px 48px 76px;
+			border:1px solid rgba(111,68,31,.64);
+			outline:1px solid rgba(255,238,196,.42);
+			outline-offset:-9px;
+			border-radius:2px;
+			background:
+				linear-gradient(90deg,rgba(84,45,20,.18),transparent 11%,transparent 88%,rgba(84,45,20,.14)),
+				linear-gradient(180deg,rgba(255,244,205,.48),rgba(165,103,44,.23)),
+				repeating-linear-gradient(7deg,rgba(82,49,22,.08) 0,rgba(82,49,22,.08) 1px,transparent 1px,transparent 9px),
+				repeating-linear-gradient(96deg,rgba(255,252,230,.14) 0,rgba(255,252,230,.14) 1px,transparent 1px,transparent 13px),
+				linear-gradient(180deg,var(--paper),var(--paper-deep));
+			background-blend-mode:multiply,normal,multiply,screen,normal;
+			box-shadow:
+				0 22px 58px rgba(45,16,12,.48),
+				inset 0 0 0 4px rgba(112,69,31,.1),
+				inset 0 0 48px rgba(89,49,20,.28),
+				inset 0 18px 30px rgba(255,245,207,.22);
+			clip-path:polygon(.4% 0,99.6% .3%,100% 99.4%,.3% 100%);
+		}
+		.box:before,.box:after{
+			content:"";
+			position:absolute;
+			width:92px;
+			height:92px;
+			border-color:rgba(163,116,54,.7);
+			pointer-events:none;
+		}
+		.box:before{
+			top:16px;
+			left:16px;
+			border-top:2px solid;
+			border-left:2px solid;
+		}
+		.box:after{
+			right:16px;
+			bottom:16px;
+			border-right:2px solid;
+			border-bottom:2px solid;
+		}
+		#avatar{
+			position:relative;
+			z-index:1;
+			text-shadow:0 1px 0 rgba(255,249,235,.85);
+		}
+		#avatar:before{
+			content:"❦";
+			position:absolute;
+			top:-24px;
+			right:-18px;
+			color:rgba(139,39,54,.22);
+			font-family:Georgia,'Times New Roman',serif;
+			font-size:86px;
+			line-height:1;
+			transform:rotate(-12deg);
+			pointer-events:none;
+		}
+		p{
+			font-family:'Songti SC','STSong','SimSun',serif;
+			line-height:1.45;
+			letter-spacing:.03em;
+		}
+		b{font-weight:normal;display:none;}
+		.english{
+			margin-bottom:4px;
+			font-size:31px;
+			font-family:Georgia,'Times New Roman',serif;
+			line-height:1.25;
+			color:var(--rose);
+			text-shadow:0 1px 0 rgba(255,247,230,.9),0 12px 34px rgba(139,39,54,.18);
+		}
+		.english:after{
+			content:"";
+			display:block;
+			width:168px;
+			height:1px;
+			margin:16px 0 0;
+			background:linear-gradient(90deg,var(--gold),rgba(200,164,91,0));
+		}
+		#cursor{
+			margin-left:-0.15em;
+			font-family:Georgia,'Times New Roman',serif;
+			color:var(--rose);
+			text-shadow:0 0 14px rgba(139,39,54,.5);
+		}
+		#callBack{
+			position:absolute;
+			z-index:3;
+			bottom:34px;
+			left:50%;
+			transform:translateX(-50%);
+		}
+		#acceptBtn{
+			min-width:118px;
+			padding:12px 26px 13px;
+			border:1px solid rgba(255,222,164,.5);
+			border-radius:999px;
+			display:none;
+			background:
+				linear-gradient(180deg,rgba(255,221,181,.24),transparent 42%),
+				linear-gradient(145deg,#9f3243,#5c1824);
+			box-shadow:0 14px 30px rgba(62,13,20,.35),inset 0 1px 0 rgba(255,255,255,.28);
+			color:#fff4df;
+			font-family:Georgia,'Songti SC',serif;
+			font-size:18px;
+			letter-spacing:.06em;
+			text-align:center;
+			text-decoration:none;
+		}
+		#acceptBtn:hover{filter:brightness(1.06);}
+		@media (max-width: 640px){
+			body{font-size:17px;align-items:flex-start;padding-top:26px;}
+			body:after{inset:8px;}
+			.box{
+				width:calc(100% - 54px);
+				min-height:calc(100vh - 52px);
+				padding:42px 22px 88px;
+			}
+			.box:before,.box:after{width:58px;height:58px;}
+			.english{font-size:25px;}
+			p{line-height:1.52;}
+			#avatar:before{font-size:58px;right:-8px;top:-16px;}
+			#callBack{bottom:24px;}
+		}
+	</style>
+
+</head>
+<body>
+<img src="mylady/myladyicon.png" style="position:absolute;top:0;left:0;visibility:hidden" />
+<div class="box">
+	<div id="avatar">
+		<p class="english">To my most beautiful and spirited lady, Maple</p>
+		<br />
+		<p>蒹葭苍苍，白露为霜，所谓伊人，在水一方</p>
+		<br />
+		<p style="padding-left:38px">伊人善笑，皓齿朱唇，明眸清眉</p>
+		<p style="padding-left:42px">伊人善文，文由心生，质朴情真</p>
+		<p style="padding-left:50px">伊人坚强勇敢，自由率性，执着热忱，有梦，亦有童真</p>
+		<p style="padding-left:50px">伊人如斯，心驰神往，然心有所慕，未敢轻言，唯借此笺，遥寄寸心</p>
+		<br />
+		<p style="padding-left:55px">ずっと前から好きでした. 私と付き合ってください</p>
+		<span id="cursor">|</span>
+	</div>
+</div>
+<audio style="display: none" id="audio"  loop="loop"  autoplay="autoplay">
+	<source src="mylady/myladybgm.mp3" type="audio/mp3" />
+</audio>
+<div id="callBack">
+	<a href="javascript:;" id="acceptBtn" style="display:none;">受け取る</a>
+</div>
+<script>
+	var _czc = _czc || [];
+	_czc.push(["_setAccount", "1260638281"]);
+	document.querySelector('body').addEventListener('touchmove', function(e) {
+		e.preventDefault();
+	})
+	var $id=function(o){return document.getElementById(o) || o};
+	var g=$id('avatar');
+	var cursor=$id("cursor");
+
+	var init=function ()
+	{
+		var n=0, l=g.innerHTML, s='';
+		while (n<l.length)
+		{
+			var r=l.charAt(n);
+			if (r==' ') { s+=r; n++}
+			if (r=='<') while (l.charAt(n-1)!='>') s+=l.charAt(n++);
+			s+='<b>'+l.charAt(n++)+'</b>';
+		}
+		g.innerHTML=s;
+	};
+
+	var Wt={};
+	Wt.n = 0,
+			Wt.i = 0;
+	Wt.p = g.getElementsByTagName("p");
+	Wt.loop=function(){
+		if( Wt.n >= Wt.p.length ) {
+			window.scrollTo(0,0);
+			pos();
+			//anim();
+			cursor.innerHTML='';
+			document.title = 'To my lady';
+			document.getElementById("acceptBtn").style.display = "block";
+			document.getElementById("acceptBtn").onclick=anim;
+			return false;
+		};
+		Wt.p[Wt.n].appendChild(cursor);
+		var _loop=function(){
+			var m = Wt.p[Wt.n].getElementsByTagName("b");
+			if(Wt.i < m.length ){
+				setTimeout(function(){
+					m[Wt.i].style.display='inline';
+					Wt.i++;
+					_loop();
+				},200);
+			}
+			else{
+				setTimeout(function(){
+					Wt.i=0;
+					Wt.n++;
+					Wt.loop();
+				},200);
+			}
+		};
+		_loop();
+	};
+
+	var glint=setInterval(function(){
+		cursor.style.display = (cursor.style.display=="none") ? "inline" : "none";
+	},200);
+
+	var xo=[], yo=[], xd=[], yd=[], e=[], an=-1, dir=-1 , t=0;
+	var d='9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF9C#9)A6=.6>&5&84OF4(@4*?3*J3-53*>3-B3*13G%44&5),6.D6377E%8.B;.0;3J?$+>E<B))B;@EG*F%-I0>I6AM&>M,=Q),PJ;T:DT@5X1$X60[NO[T,_8B_=8b16b)3eC)e!?i,Gh3!l><kD,o*Go!!r0)r%>u54t92w=+v@=y+HxGF';
+	function pos(){
+		e=g.getElementsByTagName('b');
+		for (n=0; n<e.length; n++)
+		{
+			xo[n]=e[n].offsetLeft;
+			yo[n]=e[n].offsetTop;
+			var p=d.charCodeAt(n*3)*1600+d.charCodeAt(n*3+1)*40+d.charCodeAt(n*3+2)-78768;
+			yd[n]=p%500 - 120;
+			xd[n]=(p-yd[n])/500;
+		}
+		for (n=0; n<e.length; n++)
+		{
+			e[n].style.position='absolute';
+			e[n].style.left=xo[n]+'px';
+			e[n].style.top=yo[n]+'px';
+		}
+	};
+	function ani()
+	{	t=e.length;
+		for (var n=0; n<t; n++)
+		{
+			if ((an-n<=30)&&(an-n>=0))
+			{
+				var b=(Math.cos((((an-n)*Math.PI)/30))+1)/2;
+				var a=1-b;
+				e[n].style.left=((yd[n]+111)*a+xo[n]*b)+'px';
+				e[n].style.top=((xd[n]+74)*a+yo[n]*b)+'px';
+			}
+		}
+		an+=dir;
+		if ((an-t<=30)&&(an>=0))
+		{
+			window.setTimeout("ani()", 20);
+		}else{
+			var str = 'sms:' + 13675896653;
+			str += /(iPhone|iPod|ios|iOS|iPad)/i.test(navigator.userAgent) ? '&' : '?';
+			str += 'body=' + 'いい';
+			location.href = str;
+			return false;
+		}
+	};
+	function anim()
+	{
+		_czc.push(["_trackEvent",'cssass','click','accept','yes','tome']);
+		dir*=-1;
+		if ((an<0)||(an-t>30)) ani();
+	};
+	init();
+	setTimeout(Wt.loop,500);
+</script>
+</body>
+</html>

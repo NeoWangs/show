@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>360°</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+    <script src="/public/js/jquery.js"></script>
+    <script src="spritespin.js"></script>
+    <style>
+        html,body{height:100%;overflow:hidden;}
+        .spritespin {position:absolute !important;bottom:0;left:50%;margin-left:-200px;}
+        #touchIcon{position:absolute;top:10px;left:50%;margin-left:-56px;width:113px;height:113px;background:url(images/360.png) no-repeat;}
+        .touchMouse{position:absolute;width:113px;height:113px;background:url(images/mouse.png) no-repeat; -webkit-animation:zyd .5s ease-in-out 0s infinite  alternate; animation:zyd .5s ease-in-out 0s infinite  alternate}
+        @keyframes zyd {
+            0% {
+                left: -5px;
+            }
+            100% {
+                left: 5px;
+            }
+        }
+        @-webkit-keyframes zyd {
+            0% {
+                left: -5px;
+            }
+            100% {
+                left: 5px;
+            }
+        }
+        .tongji{display: block;height: 0;overflow: hidden;width: 0;}
+        #degBox{position:absolute;z-index:1000000;}
+    </style>
+</head>
+<body>
+<div class="spritespin"></div>
+<img src="images/rad_zoom_025.jpg" style="position:absolute;width:0;height:0;"/>
+<div id="touchIcon">
+    <div class="touchMouse">&nbsp;</div>
+</div>
+<script type="text/javascript">
+    var spin = $('.spritespin');
+    spin.spritespin({
+        source: SpriteSpin.sourceArray('images/rad_zoom_{frame}.jpg', { frame: [0,24], digits: 3 }),
+        width: 400,
+        height: 552,
+        sense: -1,
+        renderer: 'canvas'
+    });
+    var api = spin.spritespin("api");
+
+    var start = new Date().getTime(),
+        delta,
+        dir = 1,
+        deg = 0;
+
+    function Orientation(selector) {
+        window.addEventListener('deviceorientation', this.orientationListener, false);
+        window.addEventListener('MozOrientation', this.orientationListener, false);
+        window.addEventListener('devicemotion', this.orientationListener, false);
+    }
+    Orientation.prototype.orientationListener = function(evt) {
+        if (!evt.gamma && !evt.beta) {
+            evt.gamma = (evt.x * (180 / Math.PI));
+            evt.beta = (evt.y * (180 / Math.PI));
+        }
+        var gamma, beta;
+        gamma = event.accelerationIncludingGravity.x || evt.gamma;
+        beta = -event.accelerationIncludingGravity.y || evt.beta;
+        //console.log(beta.toFixed(),gamma.toFixed())
+        gamma = gamma.toFixed();
+        deg = Math.abs(gamma);
+        dir = gamma/deg;
+    };
+    new Orientation();
+
+    setTimeout(function _s(){
+        delta = new Date().getTime() - start;
+        if(deg !==0 && delta > 200/deg ){
+            start = new Date().getTime();
+            (dir == -1) ?  api.nextFrame() : api.prevFrame();
+        }
+        return requestAnimationFrame(_s)
+    },800);
+
+</script>
+<span class="tongji"><script language="javascript" type="text/javascript" src="http://js.users.51.la/2501309.js"></script></span>
+</body>
+</html>

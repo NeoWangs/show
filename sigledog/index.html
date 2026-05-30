@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>单身狗大冒险</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/ex-1.1.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+<body>
+<div class="beginMain">
+	<div class="regular"><img class="regularimg" src="res/regularup.png" width="100%"></div>
+	<div class="music"><img class="musicimg" src="res/musicon.png" width="100%"></div>
+	<img src="res/begin.gif" width="100%" >
+	<!--<img class="bbup" src="res/beginbgarr/1.png" width="100%" >-->
+	<!--<img class="bbdown" src="res/beginbgarr/4.png" width="100%" style="margin-top: -1px" >-->
+</div>
+<div class="regularDiv">
+	<div class="xbut">
+		<img src="res/x.png" width="100%">
+	</div>
+	<img src="res/regular.png" width="100%">
+</div>
+
+<div class="beginbut"></div>
+
+<audio style="display: none" id="audio1"  loop="loop"  autoplay="autoplay">
+	<source src="res/music.mp3" type="audio/mp3">
+</audio>
+
+
+<script type="text/javascript" src="libs/zepto.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/index.js" charset="UTF-8"></script>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+<script type="text/javascript">
+
+	wx.config({
+		debug: false,
+		appId: 'wx28b5eb2406488b56',
+		timestamp: '1476178815',
+		nonceStr: 'k2skwre5nhruow2',
+		signature: '10d385ac93a14bef2d0c1e4a7eceb6315bd925d0',
+		jsApiList: [
+			'onMenuShareTimeline',
+			'onMenuShareAppMessage',
+			'onMenuShareQQ',
+			'onMenuShareWeibo'
+		]
+
+	});
+
+	var titlestr = "[有人@你，单身狗~]进来签收你的礼物"
+	var iconstr ='http://'+ 'm.h5mkt.com'+'/single_dog/res/icon.jpg';
+	var linkstr = 'm.h5mkt.com'+'/single_dog/startup?cc='+getQueryString('cc');
+	var decstr = '里面有一个光棍节上街的理由'
+
+
+	$(function(){
+		wx.ready(function() {
+			var au1 = document.getElementById('audio1');
+			au1.src="res/music.mp3";
+			au1.play();
+			au1.loop = true;
+			//分享给朋友
+			wx.onMenuShareAppMessage({
+				title: titlestr,
+				desc:decstr,
+				link: linkstr,
+				imgUrl: iconstr,
+				trigger: function (res) {
+				},
+				success: function (res) {
+
+					_czc.push(["_trackEvent", "分享", "share", "朋友", 1]);
+				},
+				cancel: function (res) {
+				},
+				fail: function (res) {
+				}
+			});
+			//分享到朋友圈
+			wx.onMenuShareTimeline({
+				title:titlestr,
+				link: linkstr,
+				imgUrl: iconstr,
+				trigger: function (res) {
+				},
+				success: function (res) {
+					_czc.push(["_trackEvent", "分享", "share", "朋友圈", 1]);
+				},
+				cancel: function (res) {
+				},
+				fail: function (res) {
+				}
+			});
+		})
+		wx.error(function (res) {
+			console.log(res.errMsg);
+		});
+	})
+
+	var playnow = true;
+	$(".regular").on("touchstart",function(){
+
+		_czc.push(["_trackEvent", "规则", "click", "规则按钮", 1]);
+		$(".regularimg").attr("src","res/regulardown.png");
+	});
+	$(".regular").on("touchend",function(){
+		$(".regularimg").attr("src","res/regularup.png");
+		$(".regularDiv").show();
+	});
+
+	$(".music").on("touchstart",function(){
+		if(playnow){
+
+			$(".musicimg").attr("src","res/musicclosedown.png");
+		}else{
+
+			$(".musicimg").attr("src","res/musicdown.png");
+		}
+	});
+	$(".music").on("touchend",function(){
+		if(playnow){
+			$(".musicimg").attr("src","res/musiccloseon.png");
+			playnow = false;
+			var au1 = document.getElementById('audio1');
+			au1.pause();
+		}else{
+			$(".musicimg").attr("src","res/musicon.png");
+			playnow = true;
+			var au1 = document.getElementById('audio1');
+			au1.play();
+		}
+	});
+
+	$(".beginbut").on("touchend",function(){
+
+		var u = navigator.userAgent;
+		if (u.indexOf('iPhone') > -1) {//苹果手机
+			if(window.innerWidth==320&&window.innerHeight<=480){
+				alert("抱歉，为了保证该游戏的流畅度。目前仅支持ios系统iPhone5以上机型或安卓4.0系统以上机型。谢谢你的支持及理解！你换一部吧，88~");
+			}else{
+				location.href = 'main?cc='+getQueryString('cc');
+			}
+		}else{
+			location.href = 'main?cc='+getQueryString('cc');
+		}
+
+
+
+		_czc.push(["_trackEvent", "开始游戏", "startup", "click", 1]);
+	});
+	$(".xbut").on("touchend",function(){
+		$(".regularDiv").hide();
+	});
+
+
+//	var page = 1;
+//	setInterval(function(){
+//		$(".bbup").attr("src","res/beginbgarr/"+page+".png");
+//		page = page<3?page+1:1;
+//	},200);
+//
+//	var page1 = 1;
+//	var pagearr = [4,4,4,4,4,5,6,6,6,6,6,5]
+//	setInterval(function(){
+//		$(".bbdown").attr("src","res/beginbgarr/"+pagearr[page1]+".png");
+//		page1 = page1<pagearr.length-1?page1+1:0;
+//	},200);
+//
+</script>
+</body>
+</html>
