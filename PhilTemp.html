@@ -4,50 +4,399 @@
     <meta charset="UTF-8"/>
     <title>网易“哲学气质”答案解析</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <script src="/public/js/react/react.development.js"></script>
-    <script src="/public/js/react/react-dom.development.js"></script>
-    <script src="/public/js/react/babel.min.js"></script>
+    <script src="public/js/react/react.development.js"></script>
+    <script src="public/js/react/react-dom.development.js"></script>
+    <script src="public/js/react/babel.min.js"></script>
     <style>
+        :root {
+            --paper: #f6f4ef;
+            --ink: #1f2528;
+            --muted: #687076;
+            --line: #d8d3c7;
+            --panel: #ffffff;
+            --red: #bf2f24;
+            --teal: #0f766e;
+            --blue: #325f9f;
+            --shadow: 0 18px 45px rgba(31, 37, 40, .12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+            background:
+                linear-gradient(135deg, rgba(50, 95, 159, .10), transparent 28%),
+                linear-gradient(315deg, rgba(191, 47, 36, .08), transparent 32%),
+                var(--paper);
+        }
+
         body {
+            min-height: 100%;
+            margin: 0;
+            color: var(--ink);
             font-size: 15px;
+            font-family: "Noto Serif SC", "Songti SC", "STSong", "Source Han Serif SC", serif;
+            line-height: 1.7;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .content {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 40px 0 56px;
+        }
+
+        .pageHeader {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 24px;
+            padding: 0 0 26px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 8px;
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 28px;
+            height: 2px;
+            background: var(--teal);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.18;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(92px, 1fr));
+            gap: 10px;
+            min-width: 230px;
+        }
+
+        .summaryItem {
+            min-height: 76px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, .72);
+            border: 1px solid var(--line);
+            box-shadow: 0 8px 20px rgba(31, 37, 40, .06);
+        }
+
+        .summaryLabel {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .summaryValue {
+            display: block;
+            margin-top: 6px;
+            color: var(--ink);
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 28px;
+            align-items: start;
+            padding-top: 28px;
+        }
+
+        .qustionBox,
+        .answerList {
+            margin: 0;
+            padding: 0;
+            list-style: none;
         }
 
         .qustionBox {
-            margin-right: 160px;
+            display: grid;
+            gap: 14px;
         }
 
-        .answerBox {
-            float: right;
-            width: 160px;
-            position: fixed;
-            right: 0;
-            top: 0;
+        .questionItem {
+            position: relative;
+            overflow: hidden;
+            padding: 20px 22px 18px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-left: 5px solid transparent;
+            box-shadow: 0 10px 26px rgba(31, 37, 40, .07);
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+
+        .questionItem::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: linear-gradient(90deg, rgba(15, 118, 110, .08), transparent 42%);
+            opacity: 0;
+            transition: opacity .18s ease;
+        }
+
+        .questionItem:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .questionItem.isSelected {
+            border-left-color: var(--teal);
+        }
+
+        .questionItem.isSelected::after {
+            opacity: 1;
         }
 
         h4 {
+            position: relative;
+            z-index: 1;
+            margin: 0;
             padding: 0;
-            margin: 0
+            font-size: 18px;
+            line-height: 1.45;
+            font-weight: 800;
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
+        .optionGroup {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
         }
 
-        li {
-            padding: 5px 0;
-            list-style: none;
+        .optionLabel {
+            display: inline-flex;
+            align-items: center;
+            min-height: 38px;
+            max-width: 100%;
+            padding: 7px 12px;
+            background: #f8faf9;
+            border: 1px solid #dfe5df;
+            color: #2f383c;
+            font-size: 14px;
+            line-height: 1.45;
+            transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
         }
 
-        .normal {
-            display: inline-block;
-            width: 160px;
-            font-size:14px;
-            padding-bottom:2px;
+        .optionLabel:hover {
+            transform: translateY(-1px);
+            border-color: rgba(15, 118, 110, .45);
+            background: #eef8f4;
         }
 
-        .red {
-            color: red;
+        .optionLabel input,
+        .rankItem input {
+            flex: 0 0 auto;
+            width: 16px;
+            height: 16px;
+            margin: 0 8px 0 0;
+            accent-color: var(--teal);
+        }
+
+        .optionLabel.optionSelected {
+            border-color: var(--teal);
+            background: #e5f3ef;
+            color: #103f3b;
+            font-weight: 700;
+        }
+
+        .answerBox {
+            position: sticky;
+            top: 18px;
+            padding: 18px;
+            background: rgba(31, 37, 40, .94);
+            color: #f8f7f2;
+            border: 1px solid rgba(255, 255, 255, .12);
+            box-shadow: var(--shadow);
+        }
+
+        .panelTitle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .panelTitle h2 {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.3;
+            letter-spacing: 0;
+        }
+
+        .topScore {
+            flex: 0 1 auto;
+            min-width: 0;
+            max-width: 64%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 2px 8px;
+            color: #f5c15e;
+            background: rgba(245, 193, 94, .12);
+            border: 1px solid rgba(245, 193, 94, .35);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .answerList {
+            display: grid;
+            gap: 6px;
+            max-height: calc(100vh - 174px);
+            overflow: auto;
+            padding-right: 2px;
+        }
+
+        .normal,
+        .rankItem {
+            display: grid;
+            grid-template-columns: 24px minmax(0, 1fr) auto;
+            align-items: center;
+            min-height: 34px;
+            width: 100%;
+            padding: 6px 8px;
+            color: rgba(248, 247, 242, .88);
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .07);
+            font-size: 13px;
+            line-height: 1.35;
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
+        }
+
+        .rankItem:hover {
+            transform: translateX(2px);
+            border-color: rgba(255, 255, 255, .22);
+            background: rgba(255, 255, 255, .11);
+        }
+
+        .rankName {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .score {
+            min-width: 28px;
+            color: #f5c15e;
+            font-weight: 800;
+            text-align: right;
+        }
+
+        .red,
+        .rankItem.red {
+            color: #fff;
+            background: rgba(191, 47, 36, .42);
+            border-color: rgba(255, 145, 132, .65);
+        }
+
+        .rankItem.red .score {
+            color: #fff1c2;
+        }
+
+        .resetButton {
+            width: 100%;
+            min-height: 40px;
+            margin-top: 14px;
+            color: #fff;
+            background: var(--red);
+            border: 0;
+            font-weight: 800;
+            box-shadow: 0 10px 22px rgba(191, 47, 36, .25);
+            transition: transform .18s ease, filter .18s ease;
+        }
+
+        .resetButton:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        @media (max-width: 860px) {
+            .content {
+                width: min(100% - 22px, 680px);
+                padding-top: 24px;
+            }
+
+            .pageHeader,
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .summary {
+                min-width: 0;
+            }
+
+            .answerBox {
+                position: relative;
+                top: auto;
+                order: -1;
+            }
+
+            .answerList {
+                max-height: 320px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .content {
+                width: calc(100% - 16px);
+                padding-bottom: 32px;
+            }
+
+            .questionItem {
+                padding: 16px 14px;
+            }
+
+            .optionGroup {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .optionLabel {
+                width: 100%;
+            }
+
+            .topScore {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -151,30 +500,60 @@
     }
 
     render() {
+      var answeredCount = this.state.subjects.filter((item) => item.tempValue !== undefined && item.tempValue !== -1).length;
+      var topItem = this.state.copyList[0] || {name: '等待作答', count: 0};
       return (
         <div className="content">
-          <ul className="qustionBox">
-            {
-              this.state.subjects.map((item, index) => {
-                return (<li key={index}><h4>{item.title}</h4>
-                    {
-                      item['answer'].map((a, i) => {
-                        return <label key={i}><input name={index} data-tempvalue={item.tempValue} value={i} checked={item.tempValue == i} type='radio'
-                                                     onChange={(e) => this.chooseElement(e.target)}/>{a}； </label>
-                      })
-                    }
-                  </li>
-                )
-              })}
-          </ul>
-          <div className="answerBox">
-            {
-              this.state.copyList.map((item) => {
-                return <label className={item.focus ? 'normal red' : 'normal'}
-                             key={item.index}><input name="answer" value={item.index} onChange={(e) => this.chooseAnswer(e.target)} type="radio" />{item.name}({item.count})</label>
-              })}
-              <button onClick={()=>location.reload()}>刷新</button>
-          </div>
+          <header className="pageHeader">
+            <div>
+              <p className="eyebrow">Philosophy Index</p>
+              <h1>网易“哲学气质”答案解析</h1>
+            </div>
+            <div className="summary">
+              <div className="summaryItem">
+                <span className="summaryLabel">已答题</span>
+                <span className="summaryValue">{answeredCount}/10</span>
+              </div>
+              <div className="summaryItem">
+                <span className="summaryLabel">当前最高</span>
+                <span className="summaryValue">{topItem.count}</span>
+              </div>
+            </div>
+          </header>
+          <main className="layout">
+            <ul className="qustionBox">
+              {
+                this.state.subjects.map((item, index) => {
+                  var selected = item.tempValue !== undefined && item.tempValue !== -1;
+                  return (<li className={selected ? 'questionItem isSelected' : 'questionItem'} key={index}>
+                      <h4>{item.title}</h4>
+                      <div className="optionGroup">
+                        {
+                          item['answer'].map((a, i) => {
+                            return <label className={item.tempValue == i ? 'optionLabel optionSelected' : 'optionLabel'} key={i}><input name={index} data-tempvalue={item.tempValue} value={i} checked={item.tempValue == i} type='radio'
+                                                       onChange={(e) => this.chooseElement(e.target)}/>{a}</label>
+                          })
+                        }
+                      </div>
+                    </li>
+                  )
+                })}
+            </ul>
+            <aside className="answerBox">
+              <div className="panelTitle">
+                <h2>气质排行</h2>
+                <span className="topScore">{topItem.name}</span>
+              </div>
+              <div className="answerList">
+                {
+                  this.state.copyList.map((item) => {
+                    return <label className={item.focus ? 'normal rankItem red' : 'normal rankItem'}
+                               key={item.index}><input name="answer" value={item.index} onChange={(e) => this.chooseAnswer(e.target)} type="radio" /><span className="rankName">{item.name}</span><span className="score">{item.count}</span></label>
+                  })}
+              </div>
+                <button className="resetButton" onClick={()=>location.reload()}>刷新</button>
+            </aside>
+          </main>
         </div>
       );
     }
