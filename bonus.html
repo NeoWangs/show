@@ -9,17 +9,17 @@
 html,body,#app,#showBox{height:100%;width:100%;padding:0;margin:0;}
 #controlBar{position:absolute;z-index:100;top:25px;left:20%;border:1px solid #ccc;background:rgba(0,0,0,0.2);border-radius: 5px;}
 #controlBar p{margin:5px;font-size:12px;}
-.inputText{width:100;}
-.inputArea{width:40;}
+.inputText{width:100px;}
+.inputArea{width:40px;}
 </style>
 </head>
 <body>
 <div id="app">
   <div id="controlBar">
-        <p>税前年终奖金:<input class="inputText" v-bind:value="myBonus" v-on:input="myBonus = $event.target.value" type="number"/></p>
+        <p>税前年终奖金:<input class="inputText" v-model.number="myBonus" type="number"/></p>
         <p>2019版到手:{{afterTax2019}}(税:{{tax2019}})</p>
         <p>2011版到手:{{afterTax2011}}(税:{{tax2011}})</p>
-        <p>显示范围:<input class="inputArea" v-bind:value="base_bonus/10000" v-on:input="base_bonus = $event.target.value*10000" type="number"/>万-<input class="inputArea" v-bind:value="top_bonus/10000" v-on:input="top_bonus = $event.target.value*10000" type="number"/>万</p>
+        <p>显示范围:<input class="inputArea" v-model.number="baseBonusWan" type="number"/>万-<input class="inputArea" v-model.number="topBonusWan" type="number"/>万</p>
     </div>
 	<div id="showBox" ></div>
 </div>
@@ -81,7 +81,6 @@ var app = new Vue({
         this.print();
       },
       calc:function(bonus){
-        console.log(bonus);
         var calcTax = {
           '2019':0,
           '2011':0
@@ -161,7 +160,7 @@ var app = new Vue({
           {
             type : 'category',
             axisPointer: {
-                value: this.myBonus/1000,
+                value: Math.round((Number(this.myBonus) - this.base_bonus) / this.step),
                 lineStyle: {
                     color: '#004E52',
                     opacity: 1,
@@ -259,13 +258,29 @@ var app = new Vue({
     afterTax2019: function () {
       return this.myBonus - this.tax2019
     },
-    tax2011: function () {
-      return this.calc(this.myBonus)['2011']
-    },
-    afterTax2011: function () {
-      return this.myBonus - this.tax2011
-    },
-  },
+	    tax2011: function () {
+	      return this.calc(this.myBonus)['2011']
+	    },
+	    afterTax2011: function () {
+	      return this.myBonus - this.tax2011
+	    },
+	    baseBonusWan: {
+	      get: function () {
+	        return this.base_bonus / 10000
+	      },
+	      set: function (value) {
+	        this.base_bonus = Number(value) * 10000
+	      }
+	    },
+	    topBonusWan: {
+	      get: function () {
+	        return this.top_bonus / 10000
+	      },
+	      set: function (value) {
+	        this.top_bonus = Number(value) * 10000
+	      }
+	    },
+	  },
   watch: {
     myBonus : function(){
       this.print();
